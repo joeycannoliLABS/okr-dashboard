@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ava Labs 2027 Executive OKRs</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ava Labs OKRs</title>
 <meta name="color-scheme" content="dark">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,71 +11,101 @@
 <style>
   :root {
     color-scheme: dark;
-    --bg: #101012;
-    --line: #2a2a30;
-    --text: #f4f4f2;
-    --muted: #9a9aa3;
-    --red: #e84142;
-    --fill: #f4f4f2;
-    --track: #2a2a30;
-    --s-notstarted: #8d8d97;
-    --s-ontrack: #3fd98f;
-    --s-atrisk: #ffb52e;
-    --s-completed: #5aa9ff;
-    --s-deprioritized: #6a6a74;
+    --bg: #101012; --panel: #17171a; --line: #2a2a30;
+    --text: #f4f4f2; --muted: #9a9aa3; --red: #e84142;
+    --fill: #f4f4f2; --track: #2a2a30;
+    --s-notstarted: #8d8d97; --s-ontrack: #3fd98f; --s-atrisk: #ffb52e;
+    --s-completed: #5aa9ff; --s-deprioritized: #6a6a74; --s-onhold: #c48dff;
+    --sidebar: 268px;
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--text); font-family: "Archivo", "Helvetica Neue", Arial, sans-serif; font-size: 15px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
-  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  a { color: inherit; }
   :focus-visible { outline: 2px solid var(--red); outline-offset: 3px; border-radius: 4px; }
+  .bar { height: 8px; background: var(--track); border-radius: 99px; overflow: hidden; }
+  .bar > span { display: block; height: 100%; background: var(--fill); border-radius: 99px; transition: width .4s ease; }
+  .eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 14px; font-weight: 600; }
 
-  .top { display: flex; justify-content: space-between; align-items: center; padding: 22px 0; border-bottom: 1px solid var(--line); gap: 16px; flex-wrap: wrap; }
-  .brand { font-weight: 800; font-stretch: 112%; display: flex; align-items: center; gap: 10px; }
-  .brand i { width: 14px; height: 14px; background: var(--red); clip-path: polygon(50% 0, 100% 100%, 0 100%); display: inline-block; }
-  .brand span { color: var(--muted); font-weight: 500; font-stretch: 100%; }
+  /* Shell */
+  .shell { display: grid; grid-template-columns: var(--sidebar) minmax(0, 1fr); min-height: 100vh; }
+  .side { border-right: 1px solid var(--line); padding: 22px 18px 40px; position: sticky; top: 0; align-self: start; height: 100vh; overflow-y: auto; }
+  .main { padding: 0 36px 80px; min-width: 0; }
+
+  .brand { font-weight: 800; font-stretch: 112%; display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+  .brand i { width: 13px; height: 13px; background: var(--red); clip-path: polygon(50% 0, 100% 100%, 0 100%); display: inline-block; }
+  .brand span { color: var(--muted); font-weight: 500; font-stretch: 100%; font-size: 13px; }
+
+  .years { display: flex; gap: 6px; margin-bottom: 22px; }
+  .years button { flex: 1; background: transparent; color: var(--muted); border: 1px solid var(--line); padding: 7px 0; border-radius: 8px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .years button[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+  .nav-label { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 18px 0 8px; font-weight: 700; }
+  .nav a { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: 8px; text-decoration: none; color: var(--muted); font-size: 14px; }
+  .nav a:hover { background: var(--panel); color: var(--text); }
+  .nav a[aria-current="page"] { background: var(--panel); color: var(--text); font-weight: 600; }
+  .nav a .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--s-notstarted)); flex: none; }
+  .nav a .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .nav a .pc { font-variant-numeric: tabular-nums; font-size: 12.5px; color: var(--muted); }
+
+  .topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 22px 0; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
   .live { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; }
-  .live button { background: transparent; color: var(--text); border: 1px solid var(--line); padding: 7px 14px; border-radius: 999px; font: inherit; font-size: 13px; cursor: pointer; }
   .live .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--s-ontrack); }
   .live.err .dot { background: var(--s-atrisk); }
+  .live button { background: transparent; color: var(--text); border: 1px solid var(--line); padding: 6px 13px; border-radius: 999px; font: inherit; font-size: 13px; cursor: pointer; }
+  .crumb { font-size: 13px; color: var(--muted); }
+  .crumb a { text-decoration: none; }
+  .crumb a:hover { color: var(--text); }
 
-  .hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 48px; padding: 56px 0 44px; align-items: end; }
-  .eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 14px; font-weight: 600; }
-  h1 { margin: 0; font-size: clamp(34px, 5vw, 60px); line-height: 1.02; font-weight: 800; font-stretch: 118%; letter-spacing: -.01em; }
-  .lede { color: var(--muted); max-width: 46ch; margin: 18px 0 0; font-size: 16px; }
-  .overall .num { font-size: clamp(96px, 17vw, 210px); line-height: .85; font-weight: 900; font-stretch: 125%; letter-spacing: -.03em; margin: 0; }
-  .overall .num small { font-size: .38em; font-stretch: 100%; font-weight: 600; color: var(--muted); margin-left: 4px; letter-spacing: 0; }
-  .overall .label { margin: 12px 0 14px; color: var(--muted); }
-  .bar { height: 8px; background: var(--track); border-radius: 99px; overflow: hidden; }
-  .bar > span { display: block; height: 100%; background: var(--fill); border-radius: 99px; transition: width .5s ease; }
-
-  .banner { margin: 0 0 20px; padding: 12px 16px; border: 1px solid var(--s-atrisk); color: var(--s-atrisk); border-radius: 8px; font-size: 14px; }
+  .banner { margin: 20px 0 0; padding: 12px 16px; border: 1px solid var(--s-atrisk); color: var(--s-atrisk); border-radius: 8px; font-size: 14px; }
   .banner[hidden] { display: none; }
+  .loading { padding: 80px 0; color: var(--muted); }
+
+  /* Hero */
+  .hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 48px; padding: 44px 0 38px; align-items: end; }
+  h1 { margin: 0; font-size: clamp(30px, 4vw, 52px); line-height: 1.03; font-weight: 800; font-stretch: 118%; letter-spacing: -.01em; }
+  .lede { color: var(--muted); max-width: 48ch; margin: 16px 0 0; }
+  .big .num { font-size: clamp(84px, 12vw, 168px); line-height: .85; font-weight: 900; font-stretch: 125%; letter-spacing: -.03em; margin: 0; }
+  .big .num small { font-size: .36em; font-stretch: 100%; font-weight: 600; color: var(--muted); margin-left: 4px; letter-spacing: 0; }
+  .big .label { margin: 12px 0 14px; color: var(--muted); font-size: 14px; }
 
   .strip { display: grid; grid-template-columns: repeat(5, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
   .strip div { padding: 18px 16px 18px 0; }
   .strip div + div { padding-left: 16px; border-left: 1px solid var(--line); }
-  .strip b { display: block; font-size: 30px; font-weight: 800; font-stretch: 112%; line-height: 1.1; }
+  .strip b { display: block; font-size: 28px; font-weight: 800; font-stretch: 112%; line-height: 1.1; }
   .strip span { color: var(--muted); font-size: 13px; }
 
-  .filters { display: flex; gap: 8px; margin: 36px 0 8px; flex-wrap: wrap; align-items: center; }
-  .filters p { margin: 0 8px 0 0; color: var(--muted); font-size: 13px; }
-  .chip-btn { background: transparent; color: var(--muted); border: 1px solid var(--line); padding: 7px 14px; border-radius: 999px; font: inherit; font-size: 13px; cursor: pointer; }
-  .chip-btn[aria-pressed="true"] { color: var(--text); border-color: var(--text); }
+  /* Department cards */
+  h2.section { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin: 40px 0 16px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+  .card { display: block; text-decoration: none; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+  .card:hover { border-color: var(--muted); }
+  .card .nm { font-weight: 700; font-stretch: 110%; font-size: 17px; }
+  .card .grp { color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+  .card .pct { font-size: 34px; font-weight: 800; font-stretch: 115%; line-height: 1; margin: 14px 0 10px; font-variant-numeric: tabular-nums; }
+  .card .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; color: var(--muted); font-size: 12.5px; }
+  .card .meta .status { display: inline-flex; align-items: center; gap: 6px; }
+  .card .meta i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+  .card.missing .pct { color: var(--muted); font-size: 17px; font-weight: 600; margin-bottom: 0; }
 
-  .loading { padding: 80px 0; color: var(--muted); }
+  /* Attention list */
+  .att { border-top: 1px solid var(--line); }
+  .att .row { display: grid; grid-template-columns: minmax(0, 1fr) 150px 120px 110px; gap: 16px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .att .row .dept { color: var(--muted); font-size: 13px; }
+  .att .row .t { font-size: 14.5px; }
 
-  .objective { padding: 44px 0 20px; border-top: 1px solid var(--line); margin-top: 28px; }
-  .obj-head { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 40px; align-items: end; margin-bottom: 26px; }
+  /* Objectives and key results */
+  .objective { padding: 40px 0 18px; border-top: 1px solid var(--line); margin-top: 26px; }
+  .obj-head { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 36px; align-items: end; margin-bottom: 22px; }
   .obj-head .eyebrow { color: var(--red); }
-  .obj-head h2 { margin: 0; font-size: clamp(24px, 3.2vw, 38px); line-height: 1.08; font-weight: 800; font-stretch: 115%; max-width: 24ch; }
+  .obj-head h3 { margin: 0; font-size: clamp(21px, 2.6vw, 31px); line-height: 1.1; font-weight: 800; font-stretch: 115%; max-width: 30ch; }
   .obj-score { text-align: right; }
-  .obj-score b { display: block; font-size: 52px; line-height: 1; font-weight: 800; font-stretch: 118%; margin-bottom: 10px; }
+  .obj-score b { display: block; font-size: 44px; line-height: 1; font-weight: 800; font-stretch: 118%; margin-bottom: 10px; font-variant-numeric: tabular-nums; }
 
-  .cols, .kr { display: grid; grid-template-columns: minmax(0, 2.6fr) 78px 78px 78px minmax(130px, 1.3fr) 112px 104px 108px; gap: 16px; align-items: center; }
+  .cols, .kr { display: grid; grid-template-columns: minmax(0, 2.6fr) 76px 76px 76px minmax(120px, 1.2fr) 110px 100px 104px; gap: 14px; align-items: center; }
   .cols { color: var(--muted); font-size: 12px; padding: 0 0 10px; border-bottom: 1px solid var(--line); }
-  .kr { padding: 18px 0; border-bottom: 1px solid var(--line); }
+  .kr { padding: 16px 0; border-bottom: 1px solid var(--line); }
   .kr[hidden] { display: none; }
-  .kr .text { font-size: 15.5px; line-height: 1.4; }
+  .kr .text { font-size: 15px; line-height: 1.4; }
   .val { font-variant-numeric: tabular-nums; font-size: 14px; }
   .val.cur { font-weight: 700; }
   .val.tbd { color: var(--muted); }
@@ -91,83 +121,90 @@
   .cal.none { border: 0; color: var(--muted); padding-left: 0; }
   .lab { display: none; }
 
-  footer { padding: 44px 0 64px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); margin-top: 28px; display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+  .filters { display: flex; gap: 8px; margin: 30px 0 4px; flex-wrap: wrap; align-items: center; }
+  .filters p { margin: 0 8px 0 0; color: var(--muted); font-size: 13px; }
+  .chip-btn { background: transparent; color: var(--muted); border: 1px solid var(--line); padding: 7px 14px; border-radius: 999px; font: inherit; font-size: 13px; cursor: pointer; }
+  .chip-btn[aria-pressed="true"] { color: var(--text); border-color: var(--text); }
 
-  @media (max-width: 980px) {
-    .hero { grid-template-columns: 1fr; gap: 28px; }
+  footer { padding: 36px 0 20px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); margin-top: 28px; display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+  footer a { color: var(--muted); }
+
+  @media (max-width: 1080px) {
+    .shell { grid-template-columns: 1fr; }
+    .side { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 16px 20px 20px; }
+    .nav { display: flex; flex-wrap: wrap; gap: 6px; }
+    .nav a { padding: 7px 12px; border: 1px solid var(--line); }
+    .nav-label { width: 100%; margin: 12px 0 4px; }
+    .main { padding: 0 20px 60px; }
+    .hero { grid-template-columns: 1fr; gap: 24px; padding-top: 32px; }
     .strip { grid-template-columns: repeat(2, 1fr); }
     .strip div:nth-child(odd) { padding-left: 0; border-left: 0; }
     .strip div { border-bottom: 1px solid var(--line); }
-    .obj-head { grid-template-columns: 1fr; gap: 18px; }
+    .obj-head { grid-template-columns: 1fr; gap: 16px; }
     .obj-score { text-align: left; }
     .cols { display: none; }
-    .kr { grid-template-columns: repeat(3, 1fr); gap: 12px 16px; }
+    .kr { grid-template-columns: repeat(3, 1fr); gap: 12px 14px; }
     .kr .text, .kr .prog { grid-column: 1 / -1; }
+    .att .row { grid-template-columns: 1fr 1fr; }
+    .att .row .t { grid-column: 1 / -1; }
     .lab { display: block; color: var(--muted); font-size: 11.5px; margin-bottom: 2px; }
   }
   @media (prefers-reduced-motion: reduce) { .bar > span { transition: none; } }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="top">
-    <div class="brand"><i aria-hidden="true"></i>Ava Labs <span>Executive Office</span></div>
-    <div class="live" id="live" aria-live="polite">
-      <span class="dot" aria-hidden="true"></span><span id="liveText">Loading from the OKR sheet</span>
-      <button id="refresh" type="button">Refresh</button>
+<div class="shell">
+  <aside class="side">
+    <div class="brand"><i aria-hidden="true"></i>Ava Labs <span>OKRs</span></div>
+    <div class="years" role="group" aria-label="Year">
+      <button type="button" data-year="2026" aria-pressed="true">2026</button>
+      <button type="button" data-year="2027" aria-pressed="false">2027</button>
     </div>
-  </div>
+    <nav class="nav" id="nav" aria-label="Departments"></nav>
+  </aside>
 
-  <section class="hero" aria-labelledby="pageTitle">
-    <div>
-      <p class="eyebrow">2027 Executive OKRs</p>
-      <h1 id="pageTitle">Earn from the network. Five objectives to get there.</h1>
-      <p class="lede">Live progress against each objective and key result. Focus areas: Institutional Finance, Productive RWAs and Embedded Payments.</p>
+  <main class="main">
+    <div class="topbar">
+      <div class="crumb" id="crumb"></div>
+      <div class="live" id="live" aria-live="polite">
+        <span class="dot" aria-hidden="true"></span><span id="liveText">Loading</span>
+        <button type="button" id="refresh">Refresh</button>
+      </div>
     </div>
-    <div class="overall">
-      <p class="num" id="overallNum">0<small>%</small></p>
-      <p class="label">Overall progress, average of the five objectives</p>
-      <div class="bar" role="progressbar" aria-label="Overall progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="overallBar"><span style="width:0%"></span></div>
-    </div>
-  </section>
-
-  <p class="banner" id="banner" role="alert" hidden></p>
-
-  <div class="strip" id="strip"></div>
-
-  <div class="filters" role="group" aria-label="Filter key results">
-    <p>Show</p>
-    <button class="chip-btn" data-f="all" aria-pressed="true" type="button">All key results</button>
-    <button class="chip-btn" data-f="Committed" aria-pressed="false" type="button">Committed</button>
-    <button class="chip-btn" data-f="Aspirational" aria-pressed="false" type="button">Aspirational</button>
-  </div>
-
-  <main id="objectives"><p class="loading">Loading key results</p></main>
-
-  <footer>
-    <span id="source">Source: OKR sheet</span>
-    <span id="cycleNote"></span>
-  </footer>
+    <p class="banner" id="banner" role="alert" hidden></p>
+    <div id="view"><p class="loading">Loading OKRs from the department sheets…</p></div>
+    <footer>
+      <span id="srcNote"></span>
+      <span id="cycleNote"></span>
+    </footer>
+  </main>
 </div>
 
 <script>
-const REFRESH_MS = 60000;
-
+const REFRESH_MS = 120000;
 const STATUS_COLOR = {
   "Not Started": "var(--s-notstarted)",
   "On Track": "var(--s-ontrack)",
   "At Risk": "var(--s-atrisk)",
   "Completed": "var(--s-completed)",
-  "Deprioritized": "var(--s-deprioritized)"
+  "Deprioritized": "var(--s-deprioritized)",
+  "On Hold": "var(--s-onhold)",
+  "Paused": "var(--s-onhold)"
 };
-const HOLLOW = new Set(["Not Started", "Deprioritized"]);
+const HOLLOW = new Set(["Not Started", "Deprioritized", "On Hold", "Paused"]);
+const ATTENTION = new Set(["At Risk", "On Hold", "Paused"]);
 
-let state = null;
+const cache = {};          // year -> payload
+let year = "2026";
+let page = "overview";     // "overview" or a department slug
 let filter = "all";
+let loading = false;
 
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const pct = (p) => Math.round((p || 0) * 100);
+const colorOf = (s) => STATUS_COLOR[s] || "var(--muted)";
+const avg = (l) => (l.length ? l.reduce((a, b) => a + b, 0) / l.length : null);
 
 function fmtDate(iso) {
   if (!iso) return "No date";
@@ -175,27 +212,169 @@ function fmtDate(iso) {
   return new Date(y, m - 1, d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-function cycleNote(cycle) {
-  if (!cycle || !cycle.start || !cycle.end) return "";
-  const today = new Date(); today.setHours(0, 0, 0, 0);
-  const [sy, sm, sd] = cycle.start.split("-").map(Number);
-  const [ey, em, ed] = cycle.end.split("-").map(Number);
-  const start = new Date(sy, sm - 1, sd), end = new Date(ey, em - 1, ed), day = 86400000;
-  if (today < start) return `Cycle starts in ${Math.ceil((start - today) / day)} days`;
-  if (today > end) return "Cycle ended";
-  return `${Math.ceil((end - today) / day)} days remaining`;
+function krsOf(dept) { return (dept.objectives || []).flatMap((o) => o.krs || []); }
+
+function statusCounts(list) {
+  const c = {};
+  list.forEach((k) => { c[k.status] = (c[k.status] || 0) + 1; });
+  return c;
 }
 
-function render() {
-  if (!state) return;
-  const counts = { total: 0, committed: 0, "On Track": 0, "At Risk": 0, "Not Started": 0 };
+/* ---------- routing ---------- */
+function readHash() {
+  const h = (location.hash || "").replace(/^#/, "");
+  const m = h.match(/^(\d{4})-(.+)$/);
+  if (m) { year = m[1]; page = m[2]; }
+  else { year = "2026"; page = "overview"; }
+}
+function go(y, p) { location.hash = `${y}-${p}`; }
 
-  const html = state.objectives.map((o, i) => {
-    const rows = o.krs.map((kr) => {
-      counts.total++;
-      if (kr.calibration === "Committed") counts.committed++;
-      if (counts[kr.status] !== undefined) counts[kr.status]++;
-      const color = STATUS_COLOR[kr.status] || "var(--muted)";
+/* ---------- data ---------- */
+async function load(force) {
+  if (loading) return;
+  loading = true;
+  const y = year;
+  try {
+    const res = await fetch(`/api/okrs?year=${y}`, { cache: force ? "reload" : "default" });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(body.error || `Request failed (${res.status})`);
+    cache[y] = body;
+    $("#banner").hidden = true;
+    $("#live").classList.remove("err");
+    $("#liveText").textContent = "Updated " + new Date(body.updatedAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  } catch (err) {
+    $("#live").classList.add("err");
+    $("#liveText").textContent = cache[y] ? "Showing the last update" : "Not connected";
+    $("#banner").hidden = false;
+    $("#banner").textContent = `Could not load the OKR sheets: ${err.message}` + (cache[y] ? " Showing the last data received." : "");
+  } finally {
+    loading = false;
+    render();
+  }
+}
+
+/* ---------- rendering ---------- */
+function render() {
+  const data = cache[year];
+  document.querySelectorAll(".years button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.year === year)));
+
+  if (!data) {
+    $("#nav").innerHTML = "";
+    $("#view").innerHTML = $("#banner").hidden ? '<p class="loading">Loading OKRs from the department sheets…</p>' : "";
+    return;
+  }
+
+  const depts = [...data.departments].sort((a, b) => a.name.localeCompare(b.name));
+  renderNav(depts);
+
+  const dept = depts.find((d) => d.slug === page);
+  if (page !== "overview" && !dept) { go(year, "overview"); return; }
+
+  if (dept) renderDept(dept);
+  else renderOverview(depts);
+
+  $("#srcNote").textContent = `Source: the ${year} tab of each department's OKR sheet.`;
+  $("#cycleNote").textContent = cycleNote();
+}
+
+function renderNav(depts) {
+  const link = (slug, label, extra) =>
+    `<a href="#${year}-${slug}"${page === slug ? ' aria-current="page"' : ""}>${extra || ""}<span class="nm">${esc(label)}</span></a>`;
+
+  const rows = depts.map((d) => {
+    if (d.error) return link(d.slug, d.name, `<span class="dot" style="--c:var(--s-notstarted)"></span>`) ;
+    const at = krsOf(d).filter((k) => ATTENTION.has(k.status)).length;
+    const dot = `<span class="dot" style="--c:${at ? "var(--s-atrisk)" : "var(--s-ontrack)"}"></span>`;
+    return link(d.slug, d.name, dot).replace("</a>", `<span class="pc">${pct(d.overall)}%</span></a>`);
+  }).join("");
+
+  $("#nav").innerHTML =
+    `<p class="nav-label">Company</p>${link("overview", "Overview")}` +
+    `<p class="nav-label">Departments</p>${rows}`;
+}
+
+function renderOverview(depts) {
+  const live = depts.filter((d) => !d.error);
+  const missing = depts.filter((d) => d.error);
+  const allKrs = live.flatMap(krsOf);
+  const counts = statusCounts(allKrs);
+  const overall = avg(live.map((d) => d.overall).filter((v) => typeof v === "number"));
+
+  const cards = depts.map((d) => {
+    if (d.error) {
+      return `<a class="card missing" href="#${year}-${d.slug}">
+        <div class="nm">${esc(d.name)}</div><div class="grp">${esc(d.group)}</div>
+        <div class="pct">No ${year} tab yet</div></a>`;
+    }
+    const ks = krsOf(d);
+    const c = statusCounts(ks);
+    const chips = Object.keys(c).sort().map((s) =>
+      `<span class="status"><i style="--c:${colorOf(s)}"></i>${c[s]} ${esc(s)}</span>`).join("");
+    return `<a class="card" href="#${year}-${d.slug}">
+      <div class="nm">${esc(d.name)}</div><div class="grp">${esc(d.group)}</div>
+      <div class="pct">${pct(d.overall)}%</div>
+      <div class="bar"><span style="width:${pct(d.overall)}%"></span></div>
+      <div class="meta"><span>${d.objectives.length} objectives</span><span>${ks.length} key results</span></div>
+      <div class="meta">${chips}</div></a>`;
+  }).join("");
+
+  const attention = live.flatMap((d) => krsOf(d).filter((k) => ATTENTION.has(k.status)).map((k) => ({ d, k })))
+    .sort((a, b) => (a.k.progress ?? 0) - (b.k.progress ?? 0));
+
+  const attRows = attention.map(({ d, k }) => `
+    <div class="row">
+      <div><div class="dept">${esc(d.name)}</div><div class="t">${esc(k.text)}</div></div>
+      <div class="prog"><div class="bar"><span style="width:${k.progress === null ? 0 : pct(k.progress)}%"></span></div><em>${k.progress === null ? "–" : pct(k.progress) + "%"}</em></div>
+      <div><span class="status" style="--c:${colorOf(k.status)}"><i></i>${esc(k.status)}</span></div>
+      <div class="date">${fmtDate(k.due)}</div>
+    </div>`).join("");
+
+  $("#crumb").innerHTML = `${year} company overview`;
+  $("#view").innerHTML = `
+    <section class="hero">
+      <div>
+        <p class="eyebrow">${year} Executive &amp; department OKRs</p>
+        <h1>Where every team stands this year.</h1>
+        <p class="lede">Live from each department's OKR sheet. Pick a department on the left for its objectives and key results.</p>
+      </div>
+      <div class="big">
+        <p class="num">${overall === null ? "–" : pct(overall)}<small>%</small></p>
+        <p class="label">Company progress, average of the ${live.length} departments reporting</p>
+        <div class="bar" role="progressbar" aria-label="Company progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${overall === null ? 0 : pct(overall)}"><span style="width:${overall === null ? 0 : pct(overall)}%"></span></div>
+      </div>
+    </section>
+    <div class="strip">
+      <div><b>${live.length}${missing.length ? `<span style="color:var(--muted);font-size:16px"> / ${depts.length}</span>` : ""}</b><span>Departments reporting</span></div>
+      <div><b>${live.reduce((n, d) => n + d.objectives.length, 0)}</b><span>Objectives</span></div>
+      <div><b>${allKrs.length}</b><span>Key results</span></div>
+      <div><b>${counts["On Track"] || 0}</b><span>On track</span></div>
+      <div><b>${(counts["At Risk"] || 0) + (counts["On Hold"] || 0)}</b><span>At risk or on hold</span></div>
+    </div>
+    <h2 class="section">Departments</h2>
+    <div class="cards">${cards}</div>
+    <h2 class="section">Needs attention — ${attention.length} key result${attention.length === 1 ? "" : "s"}</h2>
+    <div class="att">${attRows || '<p class="loading">Nothing flagged at risk or on hold.</p>'}</div>`;
+}
+
+function renderDept(d) {
+  $("#crumb").innerHTML = `<a href="#${year}-overview">${year} overview</a> &nbsp;›&nbsp; ${esc(d.name)}`;
+
+  if (d.error) {
+    $("#view").innerHTML = `
+      <section class="hero"><div>
+        <p class="eyebrow">${esc(d.group)}</p><h1>${esc(d.name)}</h1>
+        <p class="lede">${esc(d.error)}. Once the tab is added it shows up here automatically — no changes needed.</p>
+        <p class="lede"><a href="${esc(d.sheetUrl)}" target="_blank" rel="noopener">Open the OKR sheet</a></p>
+      </div></section>`;
+    return;
+  }
+
+  const ks = krsOf(d);
+  const counts = statusCounts(ks);
+
+  const objectives = d.objectives.map((o, i) => {
+    const score = o.progress === null ? 0 : pct(o.progress);
+    const rows = (o.krs || []).map((kr) => {
       const hollow = HOLLOW.has(kr.status) ? " hollow" : "";
       const calClass = kr.calibration === "Committed" ? "committed" : (kr.calibration ? "" : "none");
       const p = kr.progress;
@@ -205,48 +384,53 @@ function render() {
         <div class="val ${kr.start === "TBD" ? "tbd" : ""}"><span class="lab">Start</span>${esc(kr.start)}</div>
         <div class="val cur"><span class="lab">Current</span>${esc(kr.current)}</div>
         <div class="val ${kr.target === "TBD" ? "tbd" : ""}"><span class="lab">Target</span>${esc(kr.target)}</div>
-        <div class="prog">
-          <div class="bar" role="progressbar" aria-label="Progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${p === null ? 0 : pct(p)}"><span style="width:${p === null ? 0 : pct(p)}%"></span></div>
-          <em>${p === null ? "TBD" : pct(p) + "%"}</em>
-        </div>
-        <div><span class="lab">Confidence</span><span class="status${hollow}" style="--c:${color}"><i></i>${esc(kr.status)}</span></div>
+        <div class="prog"><div class="bar" role="progressbar" aria-label="Progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${p === null ? 0 : pct(p)}"><span style="width:${p === null ? 0 : pct(p)}%"></span></div><em>${p === null ? "–" : pct(p) + "%"}</em></div>
+        <div><span class="lab">Confidence</span><span class="status${hollow}" style="--c:${colorOf(kr.status)}"><i></i>${esc(kr.status)}</span></div>
         <div class="date"><span class="lab">Deadline</span>${fmtDate(kr.due)}</div>
         <div><span class="lab">Calibration</span><span class="cal ${calClass}">${esc(kr.calibration || "Not set")}</span></div>
       </div>`;
     }).join("");
 
-    const score = o.progress === null ? 0 : pct(o.progress);
     return `
-    <section class="objective" aria-labelledby="obj${i}">
+    <section class="objective">
       <div class="obj-head">
-        <div>
-          <p class="eyebrow">Objective ${i + 1}</p>
-          <h2 id="obj${i}">${esc(o.title)}</h2>
-        </div>
-        <div class="obj-score">
-          <b>${score}%</b>
-          <div class="bar" role="progressbar" aria-label="Objective ${i + 1} progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${score}"><span style="width:${score}%"></span></div>
-        </div>
+        <div><p class="eyebrow">Objective ${i + 1}</p><h3>${esc(o.title)}</h3></div>
+        <div class="obj-score"><b>${score}%</b><div class="bar" role="progressbar" aria-label="Objective ${i + 1} progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${score}"><span style="width:${score}%"></span></div></div>
       </div>
       <div class="cols" aria-hidden="true"><div>Key result</div><div>Start</div><div>Current</div><div>Target</div><div>Progress</div><div>Confidence</div><div>Deadline</div><div>Calibration</div></div>
       ${rows}
     </section>`;
   }).join("");
 
-  $("#objectives").innerHTML = html || '<p class="loading">No objectives found on the sheet tab.</p>';
+  $("#view").innerHTML = `
+    <section class="hero">
+      <div>
+        <p class="eyebrow">${esc(d.group)} · ${year}</p>
+        <h1>${esc(d.name)}</h1>
+        <p class="lede"><a href="${esc(d.sheetUrl)}" target="_blank" rel="noopener">Open the OKR sheet</a></p>
+      </div>
+      <div class="big">
+        <p class="num">${pct(d.overall)}<small>%</small></p>
+        <p class="label">Overall progress</p>
+        <div class="bar" role="progressbar" aria-label="Overall progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct(d.overall)}"><span style="width:${pct(d.overall)}%"></span></div>
+      </div>
+    </section>
+    <div class="strip">
+      <div><b>${d.objectives.length}</b><span>Objectives</span></div>
+      <div><b>${ks.length}</b><span>Key results</span></div>
+      <div><b>${counts["Completed"] || 0}</b><span>Completed</span></div>
+      <div><b>${counts["On Track"] || 0}</b><span>On track</span></div>
+      <div><b>${(counts["At Risk"] || 0) + (counts["On Hold"] || 0)}</b><span>At risk or on hold</span></div>
+    </div>
+    <div class="filters" role="group" aria-label="Filter key results">
+      <p>Show</p>
+      <button class="chip-btn" data-f="all" type="button" aria-pressed="true">All key results</button>
+      <button class="chip-btn" data-f="Committed" type="button" aria-pressed="false">Committed</button>
+      <button class="chip-btn" data-f="Aspirational" type="button" aria-pressed="false">Aspirational</button>
+    </div>
+    ${objectives}`;
 
-  const overall = state.overall === null ? 0 : pct(state.overall);
-  $("#overallNum").innerHTML = `${overall}<small>%</small>`;
-  $("#overallBar").setAttribute("aria-valuenow", overall);
-  $("#overallBar").firstElementChild.style.width = overall + "%";
-
-  $("#strip").innerHTML = [
-    [counts.total, "Key results"], [counts.committed, "Committed"],
-    [counts["On Track"], "On track"], [counts["At Risk"], "At risk"], [counts["Not Started"], "Not started"]
-  ].map(([n, l]) => `<div><b>${n}</b><span>${l}</span></div>`).join("");
-
-  $("#source").textContent = `Source: OKR sheet, tab “${state.tab}”.`;
-  $("#cycleNote").textContent = cycleNote(state.cycle);
+  document.querySelectorAll(".chip-btn").forEach((b) => b.addEventListener("click", () => { filter = b.dataset.f; applyFilter(); }));
   applyFilter();
 }
 
@@ -255,30 +439,31 @@ function applyFilter() {
   document.querySelectorAll(".chip-btn").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.f === filter)));
 }
 
-async function load() {
-  try {
-    const res = await fetch("/api/okrs", { cache: "no-store" });
-    const body = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(body.error || `Request failed (${res.status})`);
-    state = body;
-    $("#banner").hidden = true;
-    $("#live").classList.remove("err");
-    $("#liveText").textContent = "Updated " + new Date(body.updatedAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-    render();
-  } catch (err) {
-    $("#live").classList.add("err");
-    $("#liveText").textContent = state ? "Showing the last update" : "Not connected";
-    $("#banner").hidden = false;
-    $("#banner").textContent = `Could not load the OKR sheet: ${err.message}. ` + (state ? "Showing the last data received." : "Check the setup steps in the README.");
-    if (!state) $("#objectives").innerHTML = "";
-  }
+function cycleNote() {
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const start = new Date(Number(year), 0, 1), end = new Date(Number(year), 11, 31), day = 86400000;
+  if (today < start) return `${year} cycle starts in ${Math.ceil((start - today) / day)} days`;
+  if (today > end) return `${year} cycle ended`;
+  return `${Math.ceil((end - today) / day)} days left in ${year}`;
 }
 
-document.querySelectorAll(".chip-btn").forEach((b) => b.addEventListener("click", () => { filter = b.dataset.f; applyFilter(); }));
-$("#refresh").addEventListener("click", load);
-document.addEventListener("visibilitychange", () => { if (!document.hidden) load(); });
-setInterval(() => { if (!document.hidden) load(); }, REFRESH_MS);
-load();
+/* ---------- events ---------- */
+window.addEventListener("hashchange", () => {
+  const prevYear = year;
+  readHash();
+  filter = "all";
+  render();
+  if (year !== prevYear || !cache[year]) load(false);
+  window.scrollTo(0, 0);
+});
+document.querySelectorAll(".years button").forEach((b) => b.addEventListener("click", () => go(b.dataset.year, "overview")));
+$("#refresh").addEventListener("click", () => load(true));
+document.addEventListener("visibilitychange", () => { if (!document.hidden) load(false); });
+setInterval(() => { if (!document.hidden) load(false); }, REFRESH_MS);
+
+readHash();
+render();
+load(false);
 </script>
 </body>
 </html>

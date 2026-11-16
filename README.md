@@ -1,44 +1,53 @@
-# Ava Labs 2027 OKR dashboard
+# Ava Labs OKR dashboard
 
-A static page (`index.html`) plus one serverless function (`api/okrs.js`). The function fetches the 2027 tab from a small Google Apps Script attached to the OKR workbook, so no Google Cloud project is needed. The page refreshes every 60 seconds and whenever the browser tab regains focus, so sheet edits show up without a redeploy.
+A company-wide OKR dashboard: one page per year with a roll-up across all departments, and a page per department. It reads each department's OKR sheet live, so edits in the sheets show up on the dashboard without a redeploy.
 
-## One-time setup
+- `index.html` — the dashboard (sidebar, company overview, department pages)
+- `api/okrs.js` — Vercel function that fetches and parses the sheets
+- `lib/parse.js` — turns sheet rows into dashboard JSON
+- `apps-script/Code.gs` — the script that lives in a Google Sheet and reads every department
+- `vercel.json` — raises the function timeout, since 13 workbooks are read per request
 
-### 1. Add the script to the sheet (needs edit access to the workbook)
-1. Open the OKR workbook, then Extensions > Apps Script.
-2. Replace the contents of `Code.gs` with the file in `apps-script/Code.gs`.
-3. Project Settings (gear icon) > Script properties > Add script property. Name it `TOKEN` and set the value to a long random string. Save it, you will need it again in step 3.
-4. Deploy > New deployment > type Web app.
-   - Execute as: **Me**
-   - Who has access: **Anyone**
-5. Authorize when prompted, then copy the web app URL (it ends in `/exec`).
+## Upgrading from the single-department version
 
-"Anyone" only means the URL can be called without a Google login. Every request is rejected unless it carries the `TOKEN`, and only the Vercel function knows it.
+The Vercel environment variables (`APPS_SCRIPT_URL`, `APPS_SCRIPT_TOKEN`) and the `TOKEN` script property stay as they are. Two things change:
 
-### 2. If "Anyone" is not available
-Some Google Workspace admins disable it. If the option is missing or the dashboard reports "did not return JSON", ask your Google admin to allow Apps Script web apps with Anyone access for this script, or tell me and I will look at another route.
+1. **Replace `Code.gs`** in the Apps Script project with the new version, then **Deploy > Manage deployments > pencil icon > Version: New version > Deploy**. The `/exec` URL stays the same.
+2. **Re-authorize.** The new script reads 13 workbooks instead of one and calls the Sheets API directly, so Google asks for permission again the first time it runs. Open the `/exec` URL with `?token=...` in your browser once and accept the prompt.
+3. Push the new files to the Vercel project and let it redeploy.
 
-### 3. Deploy on Vercel
-1. Add two environment variables (Project > Settings > Environment Variables):
-   - `APPS_SCRIPT_URL`: the `/exec` URL from step 1
-   - `APPS_SCRIPT_TOKEN`: the same value you set as `TOKEN`
-2. Run `vercel` in this folder, or import the folder as a Vercel project. No build step is needed.
-3. Turn on Deployment Protection (Project > Settings > Deployment Protection) before sharing the URL. The dashboard shows internal OKRs.
+## First-time setup
 
-### Later changes to the script
-After editing `Code.gs`, use Deploy > Manage deployments > Edit > New version so the `/exec` URL keeps working.
+1. In any one of the OKR workbooks, open Extensions > Apps Script and paste in `apps-script/Code.gs`.
+2. Project Settings (gear icon) > Script Properties > add `TOKEN` with a long random value.
+3. Deploy > New deployment > Web app, Execute as **Me**, Who has access **Anyone**. Authorize, then copy the `/exec` URL.
+4. In Vercel, add `APPS_SCRIPT_URL` (the `/exec` URL) and `APPS_SCRIPT_TOKEN` (the same token, as a secret), then deploy.
+5. Turn on Deployment Protection so only the Vercel team can open it.
 
-## Local preview
+Whoever deploys the script must have at least view access to every department workbook, because the script runs as that person.
 
-`vercel dev` runs the page and the API together, using a `.env.local` file with the two variables. Opening `index.html` directly will not work because it needs `/api/okrs`.
+## Adding or changing departments
 
-## What the page reads
+Edit the `DEPARTMENTS` list at the top of `Code.gs`: slug, display name, group, and the workbook ID (the long string in the sheet URL). Then publish a new version of the deployment. No change to the Vercel project is needed.
 
-Columns A to P of the tab, found by structure rather than fixed row numbers:
+## How tabs are found
 
-- A row with `Objective:` in column A starts an objective. The row beneath it supplies that objective's progress from column M.
-- A row with text in column C and a value in column I is a key result. Column I (Metric) is used to show Yes/No values as Yes/No but is never displayed.
-- Progress comes from the sheet's own column M, so the dashboard always matches the sheet. `??` shows as TBD.
-- Overall progress, start date and end date come from the labeled cells in columns I and K near the top.
+The dashboard looks for a tab named after the year: `2026`, `2027`, and so on. All 13 departments have a `2026` tab. Departments whose tab is named something else need an entry in `TAB_OVERRIDES` in `Code.gs` — BD/EG's 2027 tab is currently "2027 Proposed" and is already listed there.
 
-Adding or removing key results or objectives on the tab needs no code change. Keep the `Objective:` label in column A and the `Start Date:` / `End Date:` / `Overall Progress:` labels where they are. To point at a different tab, change `GID` at the top of `Code.gs`.
+A department with no tab for that year shows as "No 2026 tab yet" on the overview and keeps its place in the sidebar. As soon as the tab is created, it appears with no code change.
+
+## What the dashboard reads
+
+Columns A to P of each year tab, found by structure rather than fixed row numbers:
+
+- A row with `Objective:` in column A starts an objective. The rows beneath it supply the objective's progress (column M) and its Committed/Aspirational label (column P or K).
+- A row with text in column C and a value in column I is a key result. Column I (Metric) drives formatting but is never displayed.
+- Progress comes from each sheet's own Progress column, so the dashboard always matches the sheet. A `??` or `-` shows as a dash.
+- Overall progress, the department name, and the cycle dates come from the labeled cells near the top.
+- A key result with the Yes/No metric shows Yes/No only when it runs 0 to 1. Departments that use Yes/No for counts (such as "9 of 12") keep their numbers.
+
+Keep the `Objective:` label in column A and the `Business Unit/Team:`, `Overall Progress:`, `Start Date:` and `End Date:` labels where they are, and any number of objectives and key results will be picked up.
+
+## Speed
+
+Reading 13 workbooks takes a few seconds. The script fetches them in parallel, the Vercel response is cached at the edge for 60 seconds, and the browser refreshes every two minutes and whenever you return to the tab. The first request after a cold start is the slowest.

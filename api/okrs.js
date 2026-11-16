@@ -1,10 +1,10 @@
-// GET /api/okrs
-// Fetches the OKR tab from the Apps Script web app attached to the sheet and returns clean JSON.
-// No npm dependencies (Node 18+ provides fetch).
+// GET /api/okrs?year=2026
+// Fetches every department's OKR tab from the Apps Script attached to the sheets,
+// parses it, and returns compact JSON for the dashboard.
 //
 // Environment variables (Vercel > Project > Settings > Environment Variables):
 //   APPS_SCRIPT_URL     the web app URL ending in /exec
-//   APPS_SCRIPT_TOKEN   the same secret you stored as the TOKEN script property
+//   APPS_SCRIPT_TOKEN   the same secret stored as the TOKEN script property
 
 const { parseSheet } = require("../lib/parse");
 
@@ -14,7 +14,13 @@ module.exports = async (req, res) => {
     const token = process.env.APPS_SCRIPT_TOKEN;
     if (!url || !token) throw new Error("Missing APPS_SCRIPT_URL or APPS_SCRIPT_TOKEN");
 
-    const upstream = await fetch(`${url}?token=${encodeURIComponent(token)}`, { redirect: "follow" });
+    const yearParam = new URL(req.url, "http://localhost").searchParams.get("year") || "2026";
+    const year = /^\d{4}$/.test(yearParam) ? yearParam : "2026";
+
+    const upstream = await fetch(
+      `${url}?token=${encodeURIComponent(token)}&year=${year}`,
+      { redirect: "follow" }
+    );
     const text = await upstream.text();
 
     let body;
@@ -25,13 +31,16 @@ module.exports = async (req, res) => {
     }
     if (body.error) throw new Error(`Apps Script: ${body.error}`);
 
-    const data = parseSheet(body.raw || [], body.fmt || []);
-    data.tab = body.tab;
-    data.updatedAt = new Date().toISOString();
+    const departments = (body.departments || []).map((d) => {
+      const base = { slug: d.slug, name: d.name, group: d.group, tab: d.tab, sheetUrl: `https://docs.google.com/spreadsheets/d/${d.id}/edit` };
+      if (d.error || !d.raw) return { ...base, error: d.error || "No data returned", objectives: [] };
+      const parsed = parseSheet(d.raw, d.fmt || []);
+      return { ...base, unit: parsed.unit, cycle: parsed.cycle, overall: parsed.overall, objectives: parsed.objectives };
+    });
 
-    // Edge cache: fresh for 30 seconds, then served stale while it refreshes in the background.
-    res.setHeader("Cache-Control", "s-maxage=30, stale-while-revalidate=120");
-    res.status(200).json(data);
+    // Edge cache: fresh for 60 seconds, then served stale while it refreshes in the background.
+    res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=600");
+    res.status(200).json({ year, departments, updatedAt: new Date().toISOString() });
   } catch (err) {
     res.setHeader("Cache-Control", "no-store");
     res.status(500).json({ error: err.message });
