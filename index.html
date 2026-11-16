@@ -16,6 +16,8 @@
     --fill: #f4f4f2; --track: #2a2a30;
     --s-notstarted: #8d8d97; --s-ontrack: #3fd98f; --s-atrisk: #ffb52e;
     --s-completed: #5aa9ff; --s-deprioritized: #6a6a74; --s-onhold: #c48dff;
+    --s-unset: #6a6a74;
+    --overdue: #ff6b6b; --soon: #ffb52e;
     --sidebar: 268px;
   }
   * { box-sizing: border-box; }
@@ -26,7 +28,6 @@
   .bar > span { display: block; height: 100%; background: var(--fill); border-radius: 99px; transition: width .4s ease; }
   .eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 14px; font-weight: 600; }
 
-  /* Shell */
   .shell { display: grid; grid-template-columns: var(--sidebar) minmax(0, 1fr); min-height: 100vh; }
   .side { border-right: 1px solid var(--line); padding: 22px 18px 40px; position: sticky; top: 0; align-self: start; height: 100vh; overflow-y: auto; }
   .main { padding: 0 36px 80px; min-width: 0; }
@@ -35,9 +36,15 @@
   .brand img { width: 24px; height: auto; display: block; flex: none; }
   .brand span { color: var(--muted); font-weight: 500; font-stretch: 100%; font-size: 13px; }
 
-  .years { display: flex; gap: 6px; margin-bottom: 22px; }
+  .years { display: flex; gap: 6px; margin-bottom: 12px; }
   .years button { flex: 1; background: transparent; color: var(--muted); border: 1px solid var(--line); padding: 7px 0; border-radius: 8px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
   .years button[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+  .searchbox { position: relative; margin-bottom: 6px; }
+  .searchbox input { width: 100%; background: var(--panel); border: 1px solid var(--line); color: var(--text); font: inherit; font-size: 13.5px; padding: 9px 30px 9px 11px; border-radius: 8px; }
+  .searchbox input::placeholder { color: var(--muted); }
+  .searchbox button { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); background: transparent; border: 0; color: var(--muted); font: inherit; font-size: 17px; line-height: 1; cursor: pointer; padding: 4px 7px; }
+  .searchbox button[hidden] { display: none; }
 
   .nav-label { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 18px 0 8px; font-weight: 700; }
   .nav a { display: flex; align-items: center; gap: 9px; padding: 8px 10px; border-radius: 8px; text-decoration: none; color: var(--muted); font-size: 14px; }
@@ -46,6 +53,7 @@
   .nav a .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--c, var(--s-notstarted)); flex: none; }
   .nav a .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .nav a .pc { font-variant-numeric: tabular-nums; font-size: 12.5px; color: var(--muted); }
+  .nav a .badge { font-size: 11.5px; font-weight: 700; background: var(--s-atrisk); color: #1b1300; border-radius: 99px; padding: 1px 7px; font-variant-numeric: tabular-nums; }
 
   .topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 22px 0; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
   .live { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; }
@@ -58,9 +66,8 @@
 
   .banner { margin: 20px 0 0; padding: 12px 16px; border: 1px solid var(--s-atrisk); color: var(--s-atrisk); border-radius: 8px; font-size: 14px; }
   .banner[hidden] { display: none; }
-  .loading { padding: 80px 0; color: var(--muted); }
+  .loading { padding: 60px 0; color: var(--muted); }
 
-  /* Hero */
   .hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 48px; padding: 44px 0 38px; align-items: end; }
   h1 { margin: 0; font-size: clamp(30px, 4vw, 52px); line-height: 1.03; font-weight: 800; font-stretch: 118%; letter-spacing: -.01em; }
   .lede { color: var(--muted); max-width: 48ch; margin: 16px 0 0; }
@@ -74,8 +81,14 @@
   .strip b { display: block; font-size: 28px; font-weight: 800; font-stretch: 112%; line-height: 1.1; }
   .strip span { color: var(--muted); font-size: 13px; }
 
-  /* Department cards */
   h2.section { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin: 40px 0 16px; }
+
+  .groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
+  .group { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  .group .nm { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .group .pct { font-size: 30px; font-weight: 800; font-stretch: 115%; line-height: 1; margin: 8px 0 10px; font-variant-numeric: tabular-nums; }
+  .group .sub { color: var(--muted); font-size: 12.5px; margin-top: 8px; }
+
   .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
   .card { display: block; text-decoration: none; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
   .card:hover { border-color: var(--muted); }
@@ -87,13 +100,25 @@
   .card .meta i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
   .card.missing .pct { color: var(--muted); font-size: 17px; font-weight: 600; margin-bottom: 0; }
 
-  /* Attention list */
-  .att { border-top: 1px solid var(--line); }
-  .att .row { display: grid; grid-template-columns: minmax(0, 1fr) 150px 120px 110px; gap: 16px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); }
-  .att .row .dept { color: var(--muted); font-size: 13px; }
-  .att .row .t { font-size: 14.5px; }
+  .rows { border-top: 1px solid var(--line); }
+  .rows .row { display: grid; grid-template-columns: minmax(0, 1fr) 150px 120px 150px; gap: 16px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); text-decoration: none; }
+  .rows a.row:hover { background: var(--panel); }
+  .rows .dept { color: var(--muted); font-size: 13px; }
+  .rows .t { font-size: 14.5px; }
 
-  /* Objectives and key results */
+  .flag { display: inline-block; font-size: 11.5px; font-weight: 700; border-radius: 99px; padding: 1px 8px; margin-left: 8px; white-space: nowrap; }
+  .flag.overdue { background: var(--overdue); color: #2a0808; }
+  .flag.soon { background: var(--soon); color: #1b1300; }
+
+  .checkgroup { border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; background: var(--panel); }
+  .checkgroup h3 { margin: 0 0 4px; font-size: 16px; font-weight: 700; font-stretch: 110%; }
+  .checkgroup .n { color: var(--muted); font-size: 12.5px; margin-bottom: 10px; }
+  .checkgroup ul { margin: 0; padding: 0; list-style: none; }
+  .checkgroup li { padding: 7px 0; border-top: 1px solid var(--line); font-size: 14px; display: flex; gap: 10px; align-items: baseline; }
+  .checkgroup li .what { color: var(--s-atrisk); font-weight: 600; white-space: nowrap; }
+  .checkgroup li .where { color: var(--muted); font-size: 13px; }
+  .clean { color: var(--s-ontrack); }
+
   .objective { padding: 40px 0 18px; border-top: 1px solid var(--line); margin-top: 26px; }
   .obj-head { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 36px; align-items: end; margin-bottom: 22px; }
   .obj-head .eyebrow { color: var(--red); }
@@ -101,7 +126,7 @@
   .obj-score { text-align: right; }
   .obj-score b { display: block; font-size: 44px; line-height: 1; font-weight: 800; font-stretch: 118%; margin-bottom: 10px; font-variant-numeric: tabular-nums; }
 
-  .cols, .kr { display: grid; grid-template-columns: minmax(0, 2.6fr) 76px 76px 76px minmax(120px, 1.2fr) 110px 100px 104px; gap: 14px; align-items: center; }
+  .cols, .kr { display: grid; grid-template-columns: minmax(0, 2.6fr) 76px 76px 76px minmax(120px, 1.2fr) 110px 128px 104px; gap: 14px; align-items: center; }
   .cols { color: var(--muted); font-size: 12px; padding: 0 0 10px; border-bottom: 1px solid var(--line); }
   .kr { padding: 16px 0; border-bottom: 1px solid var(--line); }
   .kr[hidden] { display: none; }
@@ -127,7 +152,8 @@
   .chip-btn[aria-pressed="true"] { color: var(--text); border-color: var(--text); }
 
   footer { padding: 36px 0 20px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); margin-top: 28px; display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
-  footer a { color: var(--muted); }
+
+  mark { background: rgba(255, 181, 46, .28); color: inherit; border-radius: 3px; padding: 0 2px; }
 
   @media (max-width: 1080px) {
     .shell { grid-template-columns: 1fr; }
@@ -145,8 +171,8 @@
     .cols { display: none; }
     .kr { grid-template-columns: repeat(3, 1fr); gap: 12px 14px; }
     .kr .text, .kr .prog { grid-column: 1 / -1; }
-    .att .row { grid-template-columns: 1fr 1fr; }
-    .att .row .t { grid-column: 1 / -1; }
+    .rows .row { grid-template-columns: 1fr 1fr; }
+    .rows .row .t { grid-column: 1 / -1; }
     .lab { display: block; color: var(--muted); font-size: 11.5px; margin-bottom: 2px; }
   }
   @media (prefers-reduced-motion: reduce) { .bar > span { transition: none; } }
@@ -159,6 +185,10 @@
     <div class="years" role="group" aria-label="Year">
       <button type="button" data-year="2026" aria-pressed="true">2026</button>
       <button type="button" data-year="2027" aria-pressed="false">2027</button>
+    </div>
+    <div class="searchbox">
+      <input id="search" type="search" placeholder="Search key results…" aria-label="Search key results" autocomplete="off">
+      <button type="button" id="clearSearch" aria-label="Clear search" hidden>×</button>
     </div>
     <nav class="nav" id="nav" aria-label="Departments"></nav>
   </aside>
@@ -182,6 +212,9 @@
 
 <script>
 const REFRESH_MS = 120000;
+const SOON_DAYS = 30;
+const DAY = 86400000;
+
 const STATUS_COLOR = {
   "Not Started": "var(--s-notstarted)",
   "On Track": "var(--s-ontrack)",
@@ -189,15 +222,17 @@ const STATUS_COLOR = {
   "Completed": "var(--s-completed)",
   "Deprioritized": "var(--s-deprioritized)",
   "On Hold": "var(--s-onhold)",
-  "Paused": "var(--s-onhold)"
+  "Paused": "var(--s-onhold)",
+  "Not set": "var(--s-unset)"
 };
-const HOLLOW = new Set(["Not Started", "Deprioritized", "On Hold", "Paused"]);
+const HOLLOW = new Set(["Not Started", "Deprioritized", "On Hold", "Paused", "Not set"]);
 const ATTENTION = new Set(["At Risk", "On Hold", "Paused"]);
 
-const cache = {};          // year -> payload
+const cache = {};
 let year = "2026";
-let page = "overview";     // "overview" or a department slug
+let page = "overview";
 let filter = "all";
+let search = "";
 let loading = false;
 
 const $ = (s) => document.querySelector(s);
@@ -205,27 +240,80 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 const pct = (p) => Math.round((p || 0) * 100);
 const colorOf = (s) => STATUS_COLOR[s] || "var(--muted)";
 const avg = (l) => (l.length ? l.reduce((a, b) => a + b, 0) / l.length : null);
+const statusOf = (kr) => kr.status || "Not set";
 
+function today0() { const d = new Date(); d.setHours(0, 0, 0, 0); return d; }
+function parseISO(iso) { const [y, m, d] = iso.split("-").map(Number); return new Date(y, m - 1, d); }
 function fmtDate(iso) {
   if (!iso) return "No date";
-  const [y, m, d] = iso.split("-").map(Number);
-  return new Date(y, m - 1, d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  return parseISO(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-function krsOf(dept) { return (dept.objectives || []).flatMap((o) => o.krs || []); }
+// A key result is only flagged on its deadline if it is not already finished.
+function dueState(kr) {
+  if (!kr.due || statusOf(kr) === "Completed") return "";
+  const diff = parseISO(kr.due) - today0();
+  if (diff < 0) return "overdue";
+  if (diff <= SOON_DAYS * DAY) return "soon";
+  return "";
+}
+function dueFlag(kr) {
+  const st = dueState(kr);
+  if (!st) return "";
+  const days = Math.round((parseISO(kr.due) - today0()) / DAY);
+  return st === "overdue"
+    ? `<span class="flag overdue">${days === 0 ? "Due today" : Math.abs(days) + "d over"}</span>`
+    : `<span class="flag soon">${days}d left</span>`;
+}
 
+function krsOf(dept) {
+  return (dept.objectives || []).flatMap((o) => (o.krs || []).map((k) => ({ ...k, objective: o.title })));
+}
 function statusCounts(list) {
   const c = {};
-  list.forEach((k) => { c[k.status] = (c[k.status] || 0) + 1; });
+  list.forEach((k) => { const s = statusOf(k); c[s] = (c[s] || 0) + 1; });
   return c;
+}
+function attentionCount(list) { return list.filter((k) => ATTENTION.has(statusOf(k))).length; }
+
+/* ---------- data checks ---------- */
+function checksFor(dept, yr) {
+  const out = [];
+  const add = (what, where) => out.push({ what, where });
+  const yrNum = Number(yr);
+
+  if (dept.cycle) {
+    const bad = ["start", "end"].filter((k) => dept.cycle[k] && parseISO(dept.cycle[k]).getFullYear() !== yrNum);
+    if (bad.length) add("Cycle dates are not " + yr, `Sheet header says ${dept.cycle.start || "–"} to ${dept.cycle.end || "–"}`);
+  }
+  if (dept.overall === null || dept.overall === undefined) add("No overall progress", "The Overall Progress cell is empty");
+
+  (dept.objectives || []).forEach((o, i) => {
+    const label = `Objective ${i + 1}: ${o.title || "(untitled)"}`;
+    if (!o.title) add("Objective has no title", `Objective ${i + 1}`);
+    if (!(o.krs || []).length) { add("Objective has no key results", label); return; }
+    if (o.progress === null) add("Objective has no progress", label);
+
+    o.krs.forEach((kr, j) => {
+      const where = `${label} · KR ${j + 1}`;
+      if (kr.target === "TBD") add("No target value", where);
+      if (kr.current === "TBD") add("No current value", where);
+      if (kr.progress === null) add("No progress value", where);
+      if (!kr.status) add("No confidence level", where);
+      if (!kr.due) add("No deadline", where);
+      else if (parseISO(kr.due).getFullYear() !== yrNum) add(`Deadline outside ${yr}`, `${where} · ${fmtDate(kr.due)}`);
+      if (kr.progress !== null && kr.progress >= 1 && kr.current !== "TBD" && kr.current === kr.start && kr.start !== kr.target) {
+        add("Progress is 100% but the current value still equals the start value", where);
+      }
+    });
+  });
+  return out;
 }
 
 /* ---------- routing ---------- */
 function readHash() {
-  const h = (location.hash || "").replace(/^#/, "");
-  const m = h.match(/^(\d{4})-(.+)$/);
-  if (m) { year = m[1]; page = m[2]; }
-  else { year = "2026"; page = "overview"; }
+  const m = (location.hash || "").replace(/^#/, "").match(/^(\d{4})-(.+)$/);
+  if (m) { year = m[1]; page = m[2]; } else { year = "2026"; page = "overview"; }
 }
 function go(y, p) { location.hash = `${y}-${p}`; }
 
@@ -267,38 +355,60 @@ function render() {
   const depts = [...data.departments].sort((a, b) => a.name.localeCompare(b.name));
   renderNav(depts);
 
-  const dept = depts.find((d) => d.slug === page);
-  if (page !== "overview" && !dept) { go(year, "overview"); return; }
-
-  if (dept) renderDept(dept);
-  else renderOverview(depts);
+  if (search.trim()) { renderSearch(depts); }
+  else if (page === "checks") { renderChecks(depts); }
+  else {
+    const dept = depts.find((d) => d.slug === page);
+    if (page !== "overview" && !dept) { go(year, "overview"); return; }
+    if (dept) renderDept(dept); else renderOverview(depts);
+  }
 
   $("#srcNote").textContent = `Source: the ${year} tab of each department's OKR sheet.`;
   $("#cycleNote").textContent = cycleNote();
 }
 
 function renderNav(depts) {
-  const link = (slug, label, extra) =>
-    `<a href="#${year}-${slug}"${page === slug ? ' aria-current="page"' : ""}>${extra || ""}<span class="nm">${esc(label)}</span></a>`;
+  const link = (slug, label, lead, trail) =>
+    `<a href="#${year}-${slug}"${page === slug && !search.trim() ? ' aria-current="page"' : ""}>${lead || ""}<span class="nm">${esc(label)}</span>${trail || ""}</a>`;
+
+  const issues = depts.filter((d) => !d.error).reduce((n, d) => n + checksFor(d, year).length, 0);
 
   const rows = depts.map((d) => {
-    if (d.error) return link(d.slug, d.name, `<span class="dot" style="--c:var(--s-notstarted)"></span>`) ;
-    const at = krsOf(d).filter((k) => ATTENTION.has(k.status)).length;
-    const dot = `<span class="dot" style="--c:${at ? "var(--s-atrisk)" : "var(--s-ontrack)"}"></span>`;
-    return link(d.slug, d.name, dot).replace("</a>", `<span class="pc">${pct(d.overall)}%</span></a>`);
+    if (d.error) return link(d.slug, d.name, `<span class="dot" style="--c:var(--s-notstarted)"></span>`);
+    const ks = krsOf(d);
+    const flagged = attentionCount(ks) + ks.filter((k) => dueState(k) === "overdue").length;
+    const dot = `<span class="dot" style="--c:${flagged ? "var(--s-atrisk)" : "var(--s-ontrack)"}"></span>`;
+    return link(d.slug, d.name, dot, `<span class="pc">${pct(d.overall)}%</span>`);
   }).join("");
 
   $("#nav").innerHTML =
-    `<p class="nav-label">Company</p>${link("overview", "Overview")}` +
+    `<p class="nav-label">Company</p>` +
+    link("overview", "Overview") +
+    link("checks", "Data checks", "", issues ? `<span class="badge">${issues}</span>` : "") +
     `<p class="nav-label">Departments</p>${rows}`;
 }
 
 function renderOverview(depts) {
   const live = depts.filter((d) => !d.error);
   const missing = depts.filter((d) => d.error);
-  const allKrs = live.flatMap(krsOf);
+  const allKrs = live.flatMap((d) => krsOf(d).map((k) => ({ ...k, dept: d })));
   const counts = statusCounts(allKrs);
   const overall = avg(live.map((d) => d.overall).filter((v) => typeof v === "number"));
+  const overdue = allKrs.filter((k) => dueState(k) === "overdue");
+  const soon = allKrs.filter((k) => dueState(k) === "soon");
+
+  const groupNames = [...new Set(live.map((d) => d.group))].sort();
+  const groups = groupNames.map((g) => {
+    const members = live.filter((d) => d.group === g);
+    const score = avg(members.map((d) => d.overall).filter((v) => typeof v === "number"));
+    const ks = members.flatMap(krsOf);
+    return `<div class="group">
+      <div class="nm">${esc(g)}</div>
+      <div class="pct">${score === null ? "–" : pct(score) + "%"}</div>
+      <div class="bar"><span style="width:${score === null ? 0 : pct(score)}%"></span></div>
+      <div class="sub">${members.length} department${members.length === 1 ? "" : "s"} · ${ks.length} key results · ${attentionCount(ks)} flagged</div>
+    </div>`;
+  }).join("");
 
   const cards = depts.map((d) => {
     if (d.error) {
@@ -308,34 +418,29 @@ function renderOverview(depts) {
     }
     const ks = krsOf(d);
     const c = statusCounts(ks);
+    const od = ks.filter((k) => dueState(k) === "overdue").length;
     const chips = Object.keys(c).sort().map((s) =>
       `<span class="status"><i style="--c:${colorOf(s)}"></i>${c[s]} ${esc(s)}</span>`).join("");
     return `<a class="card" href="#${year}-${d.slug}">
       <div class="nm">${esc(d.name)}</div><div class="grp">${esc(d.group)}</div>
       <div class="pct">${pct(d.overall)}%</div>
       <div class="bar"><span style="width:${pct(d.overall)}%"></span></div>
-      <div class="meta"><span>${d.objectives.length} objectives</span><span>${ks.length} key results</span></div>
+      <div class="meta"><span>${d.objectives.length} objectives</span><span>${ks.length} key results</span>${od ? `<span class="flag overdue">${od} overdue</span>` : ""}</div>
       <div class="meta">${chips}</div></a>`;
   }).join("");
 
-  const attention = live.flatMap((d) => krsOf(d).filter((k) => ATTENTION.has(k.status)).map((k) => ({ d, k })))
-    .sort((a, b) => (a.k.progress ?? 0) - (b.k.progress ?? 0));
+  const attention = allKrs.filter((k) => ATTENTION.has(statusOf(k)))
+    .sort((a, b) => (a.progress ?? 0) - (b.progress ?? 0));
+  const deadlines = [...overdue, ...soon]
+    .sort((a, b) => parseISO(a.due) - parseISO(b.due));
 
-  const attRows = attention.map(({ d, k }) => `
-    <div class="row">
-      <div><div class="dept">${esc(d.name)}</div><div class="t">${esc(k.text)}</div></div>
-      <div class="prog"><div class="bar"><span style="width:${k.progress === null ? 0 : pct(k.progress)}%"></span></div><em>${k.progress === null ? "–" : pct(k.progress) + "%"}</em></div>
-      <div><span class="status" style="--c:${colorOf(k.status)}"><i></i>${esc(k.status)}</span></div>
-      <div class="date">${fmtDate(k.due)}</div>
-    </div>`).join("");
-
-  $("#crumb").innerHTML = `${year} company overview`;
+  $("#crumb").textContent = `${year} company overview`;
   $("#view").innerHTML = `
     <section class="hero">
       <div>
         <p class="eyebrow">${year} Executive &amp; department OKRs</p>
         <h1>Where every team stands this year.</h1>
-        <p class="lede">Live from each department's OKR sheet. Pick a department on the left for its objectives and key results.</p>
+        <p class="lede">Live from each department's OKR sheet. Pick a department on the left, or search to find a key result anywhere.</p>
       </div>
       <div class="big">
         <p class="num">${overall === null ? "–" : pct(overall)}<small>%</small></p>
@@ -345,15 +450,79 @@ function renderOverview(depts) {
     </section>
     <div class="strip">
       <div><b>${live.length}${missing.length ? `<span style="color:var(--muted);font-size:16px"> / ${depts.length}</span>` : ""}</b><span>Departments reporting</span></div>
-      <div><b>${live.reduce((n, d) => n + d.objectives.length, 0)}</b><span>Objectives</span></div>
       <div><b>${allKrs.length}</b><span>Key results</span></div>
       <div><b>${counts["On Track"] || 0}</b><span>On track</span></div>
-      <div><b>${(counts["At Risk"] || 0) + (counts["On Hold"] || 0)}</b><span>At risk or on hold</span></div>
+      <div><b>${attention.length}</b><span>At risk, on hold or paused</span></div>
+      <div><b>${overdue.length}</b><span>Past deadline</span></div>
     </div>
+    <h2 class="section">By group</h2>
+    <div class="groups">${groups}</div>
     <h2 class="section">Departments</h2>
     <div class="cards">${cards}</div>
     <h2 class="section">Needs attention — ${attention.length} key result${attention.length === 1 ? "" : "s"}</h2>
-    <div class="att">${attRows || '<p class="loading">Nothing flagged at risk or on hold.</p>'}</div>`;
+    <div class="rows">${rowList(attention) || '<p class="loading">Nothing flagged at risk, on hold or paused.</p>'}</div>
+    <h2 class="section">Deadlines — ${overdue.length} past due, ${soon.length} within ${SOON_DAYS} days</h2>
+    <div class="rows">${rowList(deadlines) || '<p class="loading">Nothing overdue or due soon.</p>'}</div>`;
+}
+
+// One row per key result, used by the attention, deadline and search lists.
+function rowList(list, term) {
+  return list.map((k) => `
+    <a class="row" href="#${year}-${k.dept.slug}">
+      <div><div class="dept">${esc(k.dept.name)}</div><div class="t">${term ? highlight(k.text, term) : esc(k.text)}</div></div>
+      <div class="prog"><div class="bar"><span style="width:${k.progress === null ? 0 : pct(k.progress)}%"></span></div><em>${k.progress === null ? "–" : pct(k.progress) + "%"}</em></div>
+      <div><span class="status" style="--c:${colorOf(statusOf(k))}"><i></i>${esc(statusOf(k))}</span></div>
+      <div class="date">${fmtDate(k.due)}${dueFlag(k)}</div>
+    </a>`).join("");
+}
+
+function highlight(text, term) {
+  const i = text.toLowerCase().indexOf(term.toLowerCase());
+  if (i < 0) return esc(text);
+  return esc(text.slice(0, i)) + "<mark>" + esc(text.slice(i, i + term.length)) + "</mark>" + esc(text.slice(i + term.length));
+}
+
+function renderSearch(depts) {
+  const term = search.trim();
+  const low = term.toLowerCase();
+  const hits = depts.filter((d) => !d.error)
+    .flatMap((d) => krsOf(d).map((k) => ({ ...k, dept: d })))
+    .filter((k) => k.text.toLowerCase().includes(low) || (k.objective || "").toLowerCase().includes(low) || k.dept.name.toLowerCase().includes(low));
+
+  $("#crumb").innerHTML = `<a href="#${year}-overview">${year} overview</a> &nbsp;›&nbsp; Search`;
+  $("#view").innerHTML = `
+    <section class="hero"><div>
+      <p class="eyebrow">Search · ${year}</p>
+      <h1>${hits.length} key result${hits.length === 1 ? "" : "s"} matching “${esc(term)}”</h1>
+      <p class="lede">Searching the text of every key result, objective and department name. Click a result to open its department.</p>
+    </div></section>
+    <div class="rows">${rowList(hits, term) || '<p class="loading">No key results match that search.</p>'}</div>`;
+}
+
+function renderChecks(depts) {
+  const live = depts.filter((d) => !d.error);
+  const blocks = live.map((d) => ({ d, issues: checksFor(d, year) })).filter((x) => x.issues.length)
+    .sort((a, b) => b.issues.length - a.issues.length);
+  const total = blocks.reduce((n, b) => n + b.issues.length, 0);
+  const missing = depts.filter((d) => d.error);
+
+  const html = blocks.map(({ d, issues }) => `
+    <div class="checkgroup">
+      <h3><a href="#${year}-${d.slug}" style="text-decoration:none">${esc(d.name)}</a></h3>
+      <div class="n">${issues.length} thing${issues.length === 1 ? "" : "s"} to look at</div>
+      <ul>${issues.map((i) => `<li><span class="what">${esc(i.what)}</span><span class="where">${esc(i.where)}</span></li>`).join("")}</ul>
+    </div>`).join("");
+
+  $("#crumb").innerHTML = `<a href="#${year}-overview">${year} overview</a> &nbsp;›&nbsp; Data checks`;
+  $("#view").innerHTML = `
+    <section class="hero"><div>
+      <p class="eyebrow">Data checks · ${year}</p>
+      <h1>${total} thing${total === 1 ? "" : "s"} to tidy in the sheets.</h1>
+      <p class="lede">Gaps and inconsistencies found in the ${year} tabs. These are prompts for the department owners, not errors in the dashboard. Nothing here changes any sheet.</p>
+    </div></section>
+    ${missing.length ? `<h2 class="section">No ${year} tab yet</h2><div class="rows"><div class="row" style="grid-template-columns:1fr"><div class="t">${missing.map((d) => esc(d.name)).join(", ")}</div></div></div>` : ""}
+    <h2 class="section">By department</h2>
+    ${html || '<p class="clean">No issues found. Every key result has a target, a current value, progress, a confidence level and a deadline inside the cycle.</p>'}`;
 }
 
 function renderDept(d) {
@@ -371,11 +540,13 @@ function renderDept(d) {
 
   const ks = krsOf(d);
   const counts = statusCounts(ks);
+  const overdue = ks.filter((k) => dueState(k) === "overdue").length;
 
   const objectives = d.objectives.map((o, i) => {
     const score = o.progress === null ? 0 : pct(o.progress);
     const rows = (o.krs || []).map((kr) => {
-      const hollow = HOLLOW.has(kr.status) ? " hollow" : "";
+      const st = statusOf(kr);
+      const hollow = HOLLOW.has(st) ? " hollow" : "";
       const calClass = kr.calibration === "Committed" ? "committed" : (kr.calibration ? "" : "none");
       const p = kr.progress;
       return `
@@ -385,8 +556,8 @@ function renderDept(d) {
         <div class="val cur"><span class="lab">Current</span>${esc(kr.current)}</div>
         <div class="val ${kr.target === "TBD" ? "tbd" : ""}"><span class="lab">Target</span>${esc(kr.target)}</div>
         <div class="prog"><div class="bar" role="progressbar" aria-label="Progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${p === null ? 0 : pct(p)}"><span style="width:${p === null ? 0 : pct(p)}%"></span></div><em>${p === null ? "–" : pct(p) + "%"}</em></div>
-        <div><span class="lab">Confidence</span><span class="status${hollow}" style="--c:${colorOf(kr.status)}"><i></i>${esc(kr.status)}</span></div>
-        <div class="date"><span class="lab">Deadline</span>${fmtDate(kr.due)}</div>
+        <div><span class="lab">Confidence</span><span class="status${hollow}" style="--c:${colorOf(st)}"><i></i>${esc(st)}</span></div>
+        <div class="date"><span class="lab">Deadline</span>${fmtDate(kr.due)}${dueFlag(kr)}</div>
         <div><span class="lab">Calibration</span><span class="cal ${calClass}">${esc(kr.calibration || "Not set")}</span></div>
       </div>`;
     }).join("");
@@ -419,8 +590,8 @@ function renderDept(d) {
       <div><b>${d.objectives.length}</b><span>Objectives</span></div>
       <div><b>${ks.length}</b><span>Key results</span></div>
       <div><b>${counts["Completed"] || 0}</b><span>Completed</span></div>
-      <div><b>${counts["On Track"] || 0}</b><span>On track</span></div>
-      <div><b>${(counts["At Risk"] || 0) + (counts["On Hold"] || 0)}</b><span>At risk or on hold</span></div>
+      <div><b>${attentionCount(ks)}</b><span>At risk, on hold or paused</span></div>
+      <div><b>${overdue}</b><span>Past deadline</span></div>
     </div>
     <div class="filters" role="group" aria-label="Filter key results">
       <p>Show</p>
@@ -440,11 +611,11 @@ function applyFilter() {
 }
 
 function cycleNote() {
-  const today = new Date(); today.setHours(0, 0, 0, 0);
-  const start = new Date(Number(year), 0, 1), end = new Date(Number(year), 11, 31), day = 86400000;
-  if (today < start) return `${year} cycle starts in ${Math.ceil((start - today) / day)} days`;
-  if (today > end) return `${year} cycle ended`;
-  return `${Math.ceil((end - today) / day)} days left in ${year}`;
+  const t = today0();
+  const start = new Date(Number(year), 0, 1), end = new Date(Number(year), 11, 31);
+  if (t < start) return `${year} cycle starts in ${Math.ceil((start - t) / DAY)} days`;
+  if (t > end) return `${year} cycle ended`;
+  return `${Math.ceil((end - t) / DAY)} days left in ${year}`;
 }
 
 /* ---------- events ---------- */
@@ -452,12 +623,25 @@ window.addEventListener("hashchange", () => {
   const prevYear = year;
   readHash();
   filter = "all";
+  if (search) { search = ""; $("#search").value = ""; $("#clearSearch").hidden = true; }
   render();
   if (year !== prevYear || !cache[year]) load(false);
   window.scrollTo(0, 0);
 });
 document.querySelectorAll(".years button").forEach((b) => b.addEventListener("click", () => go(b.dataset.year, "overview")));
 $("#refresh").addEventListener("click", () => load(true));
+
+let searchTimer;
+$("#search").addEventListener("input", (e) => {
+  search = e.target.value;
+  $("#clearSearch").hidden = !search;
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(render, 120);
+});
+$("#clearSearch").addEventListener("click", () => {
+  search = ""; $("#search").value = ""; $("#clearSearch").hidden = true; render(); $("#search").focus();
+});
+
 document.addEventListener("visibilitychange", () => { if (!document.hidden) load(false); });
 setInterval(() => { if (!document.hidden) load(false); }, REFRESH_MS);
 
