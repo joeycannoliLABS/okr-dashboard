@@ -352,7 +352,12 @@ function render() {
     return;
   }
 
-  const depts = [...data.departments].sort((a, b) => a.name.localeCompare(b.name));
+  // Executive Office leads; every other department is alphabetical.
+  const depts = [...data.departments].sort((a, b) => {
+    if (a.slug === "executive") return -1;
+    if (b.slug === "executive") return 1;
+    return a.name.localeCompare(b.name);
+  });
   renderNav(depts);
 
   if (search.trim()) { renderSearch(depts); }
